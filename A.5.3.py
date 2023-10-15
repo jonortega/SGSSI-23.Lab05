@@ -17,7 +17,6 @@ def calcular_sha256(nombre_archivo):
 
 def comprobar_archivos(archivo1, archivo2):
     try:
-        # Leer el contenido completo de ambos archivos
         with open(archivo1, "r") as file1, open(archivo2, "r") as file2:
             contenido1 = file1.read()
             contenido2 = file2.read()
@@ -26,15 +25,12 @@ def comprobar_archivos(archivo1, archivo2):
         resumen_sha256_2 = calcular_sha256(archivo2)
 
         cumple_condicion = contenido2.startswith(contenido1) and \
-                           re.search(r'[0-9a-f]{8}\tfe\t100$', contenido2) and \
-                           re.match(r'^0+', resumen_sha256_2)
+                           bool(re.search(r'[0-9a-f]{8}\tfe\t100$', contenido2)) and \
+                           bool(re.match(r'^0+', resumen_sha256_2))
 
         # print(f"({contenido2.startswith(contenido1)}, {bool(re.search(r'[0-9a-f]{8}\tfe\t100$', contenido2))}, {bool(re.match(r'^0+', resumen_sha256_2))})")
+        return cumple_condicion
 
-        if cumple_condicion:
-            return True
-        else:
-            return False
     except FileNotFoundError:
         print("Al menos uno de los archivos no se encontró.")
 

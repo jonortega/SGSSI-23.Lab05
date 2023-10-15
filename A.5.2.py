@@ -3,6 +3,12 @@ import time
 import re
 
 
+def imprimir_resultados(contador, ceros, sha256, valor_hex):
+    print("===TIEMPO LIMITE (60s) ALCANZADO===")
+    print(f"Iteraciones calculadas: {contador}")
+    print(f"Hash con {ceros} ceros encontrado: {sha256}")
+    print(f"Valor HEX con el que se ha obtenido: {valor_hex}")
+
 def contar_ceros_iniciales(cadena):
     # Encuentra una o más ocurrencias de '0' al comienzo de la cadena
     match = re.match(r'^0+', cadena)
@@ -46,32 +52,26 @@ def encontrar_hex_sha256(nombre_fichero_entrada, nombre_fichero_salida):
         if time.time() > timeout:
             # Escribir el valor hash con el que más ceros se obtien
             escribir_nuevo_fichero_con_linea_final(nombre_fichero_entrada, nombre_fichero_salida,valor_hex_max_ceros)
-            print("===TIEMPO LIMITE (60s) ALCANZADO===")
-            print(f"Iteraciones calculadas: {contador}")
-            print(f"Hash con {max_ceros} ceros encontrado: {sha256_max_ceros}")
-            print(f"Valor HEX con el que se ha obtenido: {valor_hex_max_ceros}")
+            imprimir_resultados(contador, max_ceros, sha256_max_ceros, valor_hex_max_ceros)
             break
 
         sha256 = calcular_sha256(nombre_fichero_salida)
-        # print(f"SHA-256 Output.txt: {sha256}")
 
         cantidad_ceros = contar_ceros_iniciales(sha256)
         if cantidad_ceros > max_ceros:
             max_ceros = cantidad_ceros
             sha256_max_ceros = sha256
             valor_hex_max_ceros = valor_hex
-            print(f"(Ceros,Hex,Valor) = ({cantidad_ceros}, {valor_hex}, {sha256})")
+            print(f"(Ceros,Hex,SHA-256) = ({cantidad_ceros}, {valor_hex}, {sha256})")
 
         valor_hex = format(int(valor_hex, 16) + contador, "08x")
-        # print(f"Valor HEX_8 calculado: {valor_hex}")
+
         escribir_nuevo_fichero_con_linea_final(nombre_fichero_entrada, nombre_fichero_salida, valor_hex)
         contador += 1
 
-    return valor_hex
-
 def crear_fichero_salida(nombre_fichero_entrada, nombre_fichero_salida):
     open(nombre_archivo_salida, "w") # Crear el fichero de salida vacio
-    hex_adecuado = encontrar_hex_sha256(nombre_fichero_entrada, nombre_fichero_salida)
+    encontrar_hex_sha256(nombre_fichero_entrada, nombre_fichero_salida)
 
 if __name__ == "__main__":
     # nombre_archivo_entrada = input("Ingrese el nombre del archivo de entrada: ")
@@ -83,5 +83,5 @@ if __name__ == "__main__":
     crear_fichero_salida(nombre_archivo_entrada, nombre_archivo_salida)
     end = time.time()
     
-    print(f"Elapsed time: {round(end-start, 6)}s")
+    print(f"Tiempo ejecucion: {round(end-start, 6)}s")
     print("Fichero de salida creado con exito.")
