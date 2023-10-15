@@ -36,11 +36,11 @@ def encontrar_hex_sha256(nombre_fichero_entrada, nombre_fichero_salida):
         # print(f"Valor HEX_8 calculado: {valor_hex}")
         escribir_nuevo_fichero_con_linea_final(nombre_fichero_entrada, nombre_fichero_salida, valor_hex)
         contador += 1
-        
+
     return valor_hex
 
 def crear_fichero_salida(nombre_fichero_entrada, nombre_fichero_salida):
-    open(nombre_archivo_salida, "x") # Crear el fichero de salida vacio
+    open(nombre_archivo_salida, "w") # Crear el fichero de salida vacio
     hex_adecuado = encontrar_hex_sha256(nombre_fichero_entrada, nombre_fichero_salida)
 
 if __name__ == "__main__":
