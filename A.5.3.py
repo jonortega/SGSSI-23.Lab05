@@ -1,4 +1,5 @@
 import hashlib
+import re
 
 def calcular_sha256(nombre_archivo):
     sha256 = hashlib.sha256()
@@ -21,12 +22,14 @@ def comprobar_archivos(archivo1, archivo2):
             contenido1 = file1.read()
             contenido2 = file2.read()
 
-        # Calcular el resumen SHA-256 del archivo1
         resumen_sha256_1 = calcular_sha256(archivo1)
         resumen_sha256_2 = calcular_sha256(archivo2)
 
-        cumple_condicion = (contenido1.startswith(contenido2) and f"{resumen_sha256_2}" in contenido1) or \
-                           (contenido2.startswith(contenido1) and f"{resumen_sha256_1}" in contenido2)
+        cumple_condicion = contenido2.startswith(contenido1) and \
+                           re.search(r'[0-9a-f]{8}\tfe\t100$', contenido2) and \
+                           re.match(r'^0+', resumen_sha256_2)
+
+        # print(f"({contenido2.startswith(contenido1)}, {bool(re.search(r'[0-9a-f]{8}\tfe\t100$', contenido2))}, {bool(re.match(r'^0+', resumen_sha256_2))})")
 
         if cumple_condicion:
             return True
@@ -36,7 +39,10 @@ def comprobar_archivos(archivo1, archivo2):
         print("Al menos uno de los archivos no se encontró.")
 
 if __name__ == "__main__":
-    archivo1 = input("Ingrese el nombre del primer archivo de texto: ")
-    archivo2 = input("Ingrese el nombre del segundo archivo de texto: ")
+    # archivo1 = input("Ingrese el nombre del primer archivo de texto: ")
+    # archivo2 = input("Ingrese el nombre del segundo archivo de texto: ")
+    archivo1 = "SGSSI-23.CB.02.txt"
+    archivo2 = "Output.txt"
+
     resultado = comprobar_archivos(archivo1, archivo2)
     print(f"Los ficheros cumplen las condiciones: {resultado}")

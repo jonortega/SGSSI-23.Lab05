@@ -39,14 +39,17 @@ def encontrar_hex_sha256(nombre_fichero_entrada, nombre_fichero_salida):
     
     sha256_max_ceros = ""
     max_ceros = 0
+    valor_hex_max_ceros = valor_hex
 
     contador = 0
     while True:
         if time.time() > timeout:
+            # Escribir el valor hash con el que más ceros se obtien
+            escribir_nuevo_fichero_con_linea_final(nombre_fichero_entrada, nombre_fichero_salida,valor_hex_max_ceros)
             print("===TIEMPO LIMITE (60s) ALCANZADO===")
             print(f"Iteraciones calculadas: {contador}")
             print(f"Hash con {max_ceros} ceros encontrado: {sha256_max_ceros}")
-            print(f"Valor HEX con el que se ha obtenido: {valor_hex}")
+            print(f"Valor HEX con el que se ha obtenido: {valor_hex_max_ceros}")
             break
 
         sha256 = calcular_sha256(nombre_fichero_salida)
@@ -56,7 +59,8 @@ def encontrar_hex_sha256(nombre_fichero_entrada, nombre_fichero_salida):
         if cantidad_ceros > max_ceros:
             max_ceros = cantidad_ceros
             sha256_max_ceros = sha256
-            print(f"(Ceros, Valor) = ({max_ceros}, {sha256_max_ceros})")
+            valor_hex_max_ceros = valor_hex
+            print(f"(Ceros,Hex,Valor) = ({cantidad_ceros}, {valor_hex}, {sha256})")
 
         valor_hex = format(int(valor_hex, 16) + contador, "08x")
         # print(f"Valor HEX_8 calculado: {valor_hex}")
