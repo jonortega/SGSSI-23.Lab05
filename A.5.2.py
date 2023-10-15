@@ -1,5 +1,15 @@
 import hashlib
 import time
+import re
+
+
+def contar_ceros_iniciales(cadena):
+    # Encuentra una o más ocurrencias de '0' al comienzo de la cadena
+    match = re.match(r'^0+', cadena)
+    if match:
+        return len(match.group(0)) # Cantidad de ceros iniciales
+    else:
+        return 0
 
 def calcular_sha256(nombre_fichero):
     sha256 = hashlib.sha256()
@@ -26,23 +36,30 @@ def escribir_nuevo_fichero_con_linea_final(nombre_fichero_entrada, nombre_ficher
 def encontrar_hex_sha256(nombre_fichero_entrada, nombre_fichero_salida):
     valor_hex = "00000000" # Generar un valor hexadecimal inicial
     timeout = time.time() + 60 # Dentro de 60 segundos
+    
+    sha256_max_ceros = ""
+    max_ceros = 0
+
     contador = 0
     while True:
         if time.time() > timeout:
             print("===TIEMPO LIMITE (60s) ALCANZADO===")
             print(f"Iteraciones calculadas: {contador}")
-            print(f"Hash con mas ceros encontrado: {sha256}")
+            print(f"Hash con {max_ceros} ceros encontrado: {sha256_max_ceros}")
             print(f"Valor HEX con el que se ha obtenido: {valor_hex}")
             break
 
         sha256 = calcular_sha256(nombre_fichero_salida)
-        print(f"SHA-256 Output.txt: {sha256}")
+        # print(f"SHA-256 Output.txt: {sha256}")
 
-        if sha256.startswith("0000"):
-            break
+        cantidad_ceros = contar_ceros_iniciales(sha256)
+        if cantidad_ceros > max_ceros:
+            max_ceros = cantidad_ceros
+            sha256_max_ceros = sha256
+            print(f"(Ceros, Valor) = ({max_ceros}, {sha256_max_ceros})")
 
         valor_hex = format(int(valor_hex, 16) + contador, "08x")
-        print(f"Valor HEX_8 calculado: {valor_hex}")
+        # print(f"Valor HEX_8 calculado: {valor_hex}")
         escribir_nuevo_fichero_con_linea_final(nombre_fichero_entrada, nombre_fichero_salida, valor_hex)
         contador += 1
 
