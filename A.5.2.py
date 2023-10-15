@@ -11,19 +11,15 @@ def calcular_sha256(nombre_fichero):
             sha256.update(datos)
     return sha256.hexdigest()
 
-def reescribir_fichero(nombre_fichero_entrada, nombre_fichero_salida):
+def escribir_nuevo_fichero_con_linea_final(nombre_fichero_entrada, nombre_fichero_salida, hex_adecuado):
     # Leer el contenido del fichero de entrada
     with open(nombre_fichero_entrada, "r") as entrada:
         contenido = entrada.read()
 
     with open(nombre_fichero_salida, "w") as salida:
         salida.write(contenido)
-
-def escribir_nuevo_fichero_con_linea_final(nombre_fichero_entrada, nombre_fichero_salida, hex_adecuado):
-    reescribir_fichero(nombre_archivo_entrada, nombre_archivo_salida)
-    
-    # Agregar la línea adicional
-    with open(nombre_archivo_salida, "a") as salida:
+        
+        # Agregar la línea adicional
         linea_adicional = f"{hex_adecuado}\tfe\t100\n"
         salida.write(linea_adicional)
 
@@ -33,15 +29,16 @@ def encontrar_hex_sha256(nombre_fichero_entrada, nombre_fichero_salida):
     contador = 0
     while True:
         if time.time() > timeout:
-            reescribir_fichero(nombre_fichero_entrada, nombre_fichero_salida)
             print("===TIEMPO LIMITE (60s) ALCANZADO===")
             print(f"Iteraciones calculadas: {contador}")
-            exit(1)
+            print(f"Hash con mas ceros encontrado: {sha256}")
+            print(f"Valor HEX con el que se ha obtenido: {valor_hex}")
+            break
 
         sha256 = calcular_sha256(nombre_fichero_salida)
         print(f"SHA-256 Output.txt: {sha256}")
 
-        if sha256.startswith("00"):
+        if sha256.startswith("0000"):
             break
 
         valor_hex = format(int(valor_hex, 16) + contador, "08x")
