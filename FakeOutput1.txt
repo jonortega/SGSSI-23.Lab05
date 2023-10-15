@@ -1,12 +1,6 @@
-import re
-
-patron = r'^[a-f0-9]{8}\tfe\t100'  # Expresión regular
-
-# Texto de ejemplo
-texto = """
-02
-S42	33
-c7d075a02535a623c37497f4bc5ad158b0084d0de45d11b931b5bbd3d3579fa8
+02			
+S42	33		
+c7d075a02535a623c37497f4bc5ad158b0084d0de45d11b931b5bbd3d3579fa8			
 01	3046022100b89	04	50
 02	502202		0d	50
 03	3046022100f1d	13	50
@@ -40,11 +34,4 @@ c7d075a02535a623c37497f4bc5ad158b0084d0de45d11b931b5bbd3d3579fa8
 31	402204		f0	50
 32	304602210	f6	50
 33	6022100889ef	fe	50
-00d606d8	fe	100
-"""
-
-lineas = texto.split("\n")
-
-for linea in lineas:
-    if re.match(patron, linea):
-        print(f"Coincidencia: {linea}")
+003c4e8b	fe	100
